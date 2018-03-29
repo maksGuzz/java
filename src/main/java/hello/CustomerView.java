@@ -92,7 +92,7 @@ public class CustomerView extends VerticalLayout implements View {
 	private HorizontalLayout tableRow()
 	{
 		VerticalLayout v1 = new VerticalLayout();
-		v1.addComponent(new Label("Customers List"));
+		//v1.addComponent(new Label("Customers List"));
 		v1.addComponent(fgrid);
 		fgrid.grid = grid;
 		v1.addComponent(userActions);

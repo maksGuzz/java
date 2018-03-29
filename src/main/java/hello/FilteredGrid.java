@@ -15,6 +15,8 @@ public class FilteredGrid extends VerticalLayout
     private final HorizontalLayout filterRow;
 
     public FilteredGrid() {
+    	setMargin(false);
+    	setSpacing(false);
     	firstNameFilter = new TextField();
     	firstNameFilter.setPlaceholder("Name...");
     	firstNameFilter.addValueChangeListener(this::on1FilterTextChange);

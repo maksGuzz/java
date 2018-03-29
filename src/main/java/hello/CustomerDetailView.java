@@ -66,7 +66,7 @@ public class CustomerDetailView extends VerticalLayout  implements View
 
 		address.setSizeFull();
 
-		addComponents(nameRow(), address, age);
+		addComponents(nameRow(), address);
 		setSpacing(true);
 		actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 
@@ -113,7 +113,7 @@ public class CustomerDetailView extends VerticalLayout  implements View
 		sample.setMargin(false);
 		sample.setSizeFull();
 
-		sample.addComponents(firstName, lastName);
+		sample.addComponents(firstName, lastName, age);
 		return sample;
 	}
 	
