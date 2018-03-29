@@ -31,7 +31,7 @@ import com.vaadin.ui.VerticalLayout;
 
 @UIScope
 @SpringView(name = AccountsView.VIEW_NAME)
-public class AccountsView extends VerticalLayout implements View {
+public class AccountsView extends HorizontalLayout implements View {
 
 	private static final long serialVersionUID = -3089111062236116441L;
 
@@ -71,9 +71,14 @@ public class AccountsView extends VerticalLayout implements View {
 	{
 		status.setItems(Stream.of(AccountStatus.values()).map(AccountStatus::name).collect(Collectors.toList()));
 		status.setValue(AccountStatus.ACTIVE.name());
+		
 		addComponent(username);
-		addComponent(status);
-		addComponent(accNum);
+		HorizontalLayout hl = new HorizontalLayout();
+		hl.addComponents(status, accNum);
+		
+		VerticalLayout vl = new VerticalLayout();
+		vl.addComponents(hl, actions);
+		addComponent(vl);
 		
 		addComponent(acc);
 		
@@ -83,18 +88,24 @@ public class AccountsView extends VerticalLayout implements View {
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 
 		save.addClickListener(e -> { 
-				accountService.saveWithUserId(accountModel, uid);
-				getUI().getNavigator().navigateTo(CustomerView.VIEW_NAME);
+				if (binder.validate().isOk())
+				{
+					accountService.saveWithUserId(accountModel, uid);
+					getUI().getNavigator().navigateTo(CustomerView.VIEW_NAME);
+				}
 			});
 		cancel.addClickListener(e -> { 
 			getUI().getNavigator().navigateTo(CustomerView.VIEW_NAME);
 		});
-		delete.addClickListener(e -> accountService.delete(accountModel));
+		delete.addClickListener(e -> {
+				accountService.delete(accountModel);
+				refresh();
+			});
 		delete.setVisible(false);
 
 		bindingFields();
 
-		addComponent(actions);
+		
 		
 		acc.setSelectionMode(SelectionMode.SINGLE);
 		acc.asSingleSelect().addValueChangeListener(e -> {
@@ -110,8 +121,8 @@ public class AccountsView extends VerticalLayout implements View {
 	private void bindingFields() {
 		binder.forField(this.accNum)
 				.withNullRepresentation("")
+				.withValidator(str -> str.length() > 0, "30 chars MAX")
 				.withConverter(new StringToLongConverter("Numbers only"))
-				//.withValidator(str -> str.length() <= 30, "30 chars MAX")
 				.asRequired(ACC_NUM_IS_REQUIRED).bind(AccountModel::getAccountNumber, AccountModel::setAccountNumber);
 
 		binder.forField(this.userId).withConverter(new StringToLongConverter("Numbers only")).bind(AccountModel::getUserId, AccountModel::setUserId);
